@@ -2,7 +2,7 @@
 <html>
     <h3>Javascript Basics</h3>
     <button onclick="cleanAndCountCharacters()">
-        clean and count words
+        clean and count characters
     </button>
     <body>
     </body>
@@ -67,8 +67,7 @@
         'ParkWhiz'
     ];
 
-    function clearDocument() {
-        var rootDiv = document.getElementById('rootContainer');
+    function clearDocument(rootDiv) {
         if (rootDiv) {
             while (rootDiv.hasChildNodes()) {
                 rootDiv.removeChild(rootDiv.lastChild);
@@ -77,17 +76,25 @@
     }
 
     function initDocument() {
-        clearDocument();
-        var rootDiv = document.createElement('div');
-        rootDiv.id = 'rootContainer';
+        var rootDiv = document.getElementById('rootContainer');
+        if (!rootDiv) {
+            rootDiv = document.createElement('div');
+            rootDiv.id = 'rootContainer';
+        } else {
+            clearDocument(rootDiv);
+        }
+
         var companyNamesContainer = document.createElement('div');
+        companyNamesContainer.className = 'startups-container main';
+
+        rootDiv.appendChild(companyNamesContainer);
+
         chicagoStartups.forEach( function(chicagoStartup, index) {
             var childDiv = document.createElement('div');
             var text = document.createTextNode(index.toString().concat(' .) ').concat(chicagoStartup));
             childDiv.appendChild(text);
             companyNamesContainer.appendChild(childDiv);
         });
-        rootDiv.appendChild(companyNamesContainer);
         document.body.appendChild(rootDiv);
     }
 
@@ -128,9 +135,11 @@
     function chicagoStartupsReverse() {
         var reversedStartups = [];
 
-        let numberOfStartups = chicagoStartups.length;
+        var cloneChicagoStartups = chicagoStartups.slice(0);
+
+        let numberOfStartups = cloneChicagoStartups.length;
         for (var i = 0; i < numberOfStartups; i++) {
-            let startupAtTopOfArrayStack = chicagoStartups.pop();
+            let startupAtTopOfArrayStack = cloneChicagoStartups.pop();
             reversedStartups.push(startupAtTopOfArrayStack);
         }
 
@@ -140,12 +149,34 @@
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
 
-        /*
-            TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
-              DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
-              DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
-        */
+        chicagoStartups = chicagoStartups.map((startup) => {
+            startup = startup.trim();
 
+            startup = startup
+                .split("")
+                .filter((char) => {
+                    return isLetter(char) || char == " ";
+                });
+
+            startup = startup.reduce((accumulationNoRepeatedWhitespace, currChar)=>{
+                if (currChar === " " && currChar === accumulationNoRepeatedWhitespace.slice(-1)){
+                    return accumulationNoRepeatedWhitespace
+                } else {
+                    return accumulationNoRepeatedWhitespace + currChar;
+                }
+            });
+
+            let numberOfChars = startup.length;
+
+            startup += " " + numberOfChars;
+            return startup;
+        });
+
+        run();
+    }
+
+    function isLetter(char) {
+        return char.toLowerCase() !== char.toUpperCase();
     }
     
     function initReverse() {
