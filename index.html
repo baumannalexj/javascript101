@@ -110,7 +110,12 @@
             }
             else {
                 //TODO:: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
-                chicagoStartups.reverse().forEach( function(startup) {
+               
+                // chicagoStartups.reverse()
+
+                let reversedChicagoStartups = chicagoStartupsReverse();
+
+                reversedChicagoStartups.forEach( function(startup) {
                     var childDiv = document.createElement('div');
                     var text = document.createTextNode(startup);
                     childDiv.appendChild(text);
@@ -122,6 +127,15 @@
 
     function chicagoStartupsReverse() {
         var reversedStartups = [];
+
+        let numberOfStartups = chicagoStartups.length;
+        for (var i = 0; i < numberOfStartups; i++) {
+            let startupAtTopOfArrayStack = chicagoStartups.pop();
+            reversedStartups.push(startupAtTopOfArrayStack);
+        }
+
+
+        return reversedStartups;
         /*
             TODO: REVERSE THE CONTENTS OF THE ARRAY WITHOUT USING THE BUILT IN REVERSE METHOD
                   RETURN THE REVERSED ARRAY
@@ -133,11 +147,11 @@
                     DATA STRUTUCTURES REGARDLESS OF THE PROGRAMMING LANGUAGE
         
         */
-        return reversedStartups;
     }
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
+
         /*
             TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
               DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
@@ -161,14 +175,15 @@
 
     function toggleDisplay() {
         /*
-        TODO: REVIEW THE CODE IN THE PROVIDED REVERSE EXAMPLE, USE JAVASCRIPT TO ADD A CLICKABLE BUTTON 
+        TODO: REVIEW THE CODE IN THE PROVIDED REVERSE EXAMPLE, 
+        USE JAVASCRIPT TO ADD A CLICKABLE BUTTON 
         CALLED "Toggle Display" ... WHEN THE USER CLICKS THE BUTTON, IT RENDERS THE DISPLAY OF THE COMPANY NAMES 
         FROM VERTICAL, TO HORIZONTAL.
+
         IF THE USER CLICKS THE TOGGLE BUTTON AGAIN THE NAMES SHOULD ONCE AGAIN BE DISPLAYED VERTICALLY.
 
         TIPS: 
-            1.  MAKE SURE TO READ AND UNDERSTAND THE DIFFERENCE BETWEEN BLOCK ELEMENTS SUCH AS A DIV, 
-                AND INLINE ELEMENTS SUCH AS A SPAN.
+            1.  MAKE SURE TO READ AND UNDERSTAND THE DIFFERENCE BETWEEN BLOCK ELEMENTS SUCH AS A DIV, AND INLINE ELEMENTS SUCH AS A SPAN.
 
             2.  DIVIDE AND CONQUER.
 
