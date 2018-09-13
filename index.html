@@ -2,7 +2,7 @@
 <html>
     <h3>Javascript Basics</h3>
     <button onclick="cleanAndCountCharacters()">
-        clean and count words
+        clean and count characters
     </button>
     <body>
     </body>
@@ -67,8 +67,7 @@
         'ParkWhiz'
     ];
 
-    function clearDocument() {
-        var rootDiv = document.getElementById('rootContainer');
+    function clearDocument(rootDiv) {
         if (rootDiv) {
             while (rootDiv.hasChildNodes()) {
                 rootDiv.removeChild(rootDiv.lastChild);
@@ -77,12 +76,12 @@
     }
 
     function initDocument() {
-        clearDocument();
         var rootDiv = document.getElementById('rootContainer');
-
         if (!rootDiv) {
-            var rootDiv = document.createElement('div');
+            rootDiv = document.createElement('div');
             rootDiv.id = 'rootContainer';
+        } else {
+            clearDocument(rootDiv);
         }
 
         var companyNamesContainer = document.createElement('div');
@@ -149,41 +148,31 @@
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
-        // let startupContainer = document.querySelector(".startups-container.main");
-        //
-        // startupContainer.parentElement.removeChild(startupContainer);
 
-        // clearDocument();
-
-        //
-        chicagoStartups.map((startup) => {
+        chicagoStartups = chicagoStartups.map((startup) => {
             startup = startup.trim();
-            let noRepeatingWhitespace = startup.replace(/([\s.'-,])\1+/, " ");
-            startup = noRepeatingWhitespace; //TODO why is this red squiggle
 
-            //TODO do I reassign here?
             startup = startup
                 .split("")
-                .filter((e) => {
-                    isLetter(e) || e == " "
-                })
-                .join("");
+                .filter((char) => {
+                    return isLetter(char) || char == " ";
+                });
 
-            var numberOfChars = startup.length;
+            startup = startup.reduce((accumulationNoRepeatedWhitespace, currChar)=>{
+                if (currChar === " " && currChar === accumulationNoRepeatedWhitespace.slice(-1)){
+                    return accumulationNoRepeatedWhitespace
+                } else {
+                    return accumulationNoRepeatedWhitespace + currChar;
+                }
+            });
+
+            let numberOfChars = startup.length;
 
             startup += " " + numberOfChars;
-
+            return startup;
         });
 
         run();
-
-
-        /*
-            TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
-              DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
-              DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
-        */
-
     }
 
     function isLetter(char) {
