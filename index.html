@@ -78,16 +78,24 @@
 
     function initDocument() {
         clearDocument();
-        var rootDiv = document.createElement('div');
-        rootDiv.id = 'rootContainer';
+        var rootDiv = document.getElementById('rootContainer');
+
+        if (!rootDiv) {
+            var rootDiv = document.createElement('div');
+            rootDiv.id = 'rootContainer';
+        }
+
         var companyNamesContainer = document.createElement('div');
+        companyNamesContainer.className = 'startups-container main';
+
+        rootDiv.appendChild(companyNamesContainer);
+
         chicagoStartups.forEach( function(chicagoStartup, index) {
             var childDiv = document.createElement('div');
             var text = document.createTextNode(index.toString().concat(' .) ').concat(chicagoStartup));
             childDiv.appendChild(text);
             companyNamesContainer.appendChild(childDiv);
         });
-        rootDiv.appendChild(companyNamesContainer);
         document.body.appendChild(rootDiv);
     }
 
@@ -128,9 +136,11 @@
     function chicagoStartupsReverse() {
         var reversedStartups = [];
 
-        let numberOfStartups = chicagoStartups.length;
+        var cloneChicagoStartups = chicagoStartups.slice(0);
+
+        let numberOfStartups = cloneChicagoStartups.length;
         for (var i = 0; i < numberOfStartups; i++) {
-            let startupAtTopOfArrayStack = chicagoStartups.pop();
+            let startupAtTopOfArrayStack = cloneChicagoStartups.pop();
             reversedStartups.push(startupAtTopOfArrayStack);
         }
 
@@ -139,6 +149,34 @@
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
+        // let startupContainer = document.querySelector(".startups-container.main");
+        //
+        // startupContainer.parentElement.removeChild(startupContainer);
+
+        // clearDocument();
+
+        //
+        chicagoStartups.map((startup) => {
+            startup = startup.trim();
+            let noRepeatingWhitespace = startup.replace(/([\s.'-,])\1+/, " ");
+            startup = noRepeatingWhitespace; //TODO why is this red squiggle
+
+            //TODO do I reassign here?
+            startup = startup
+                .split("")
+                .filter((e) => {
+                    isLetter(e) || e == " "
+                })
+                .join("");
+
+            var numberOfChars = startup.length;
+
+            startup += " " + numberOfChars;
+
+        });
+
+        run();
+
 
         /*
             TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
@@ -146,6 +184,10 @@
               DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
         */
 
+    }
+
+    function isLetter(char) {
+        return char.toLowerCase() !== char.toUpperCase();
     }
     
     function initReverse() {
