@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
     <h3>Javascript Basics</h3>
-    <button onclick="cleanAndCountCharacters()">
-        clean and count words
-    </button>
+    <span>
+
+        <button onclick="cleanAndCountCharacters()">
+            clean and count characters
+        </button>
+
+        <button onclick="toggleDisplay()">
+            toggle display
+        </button>
+
+    </span>
     <body>
     </body>
 </html>
@@ -67,8 +75,7 @@
         'ParkWhiz'
     ];
 
-    function clearDocument() {
-        var rootDiv = document.getElementById('rootContainer');
+    function clearDocument(rootDiv) {
         if (rootDiv) {
             while (rootDiv.hasChildNodes()) {
                 rootDiv.removeChild(rootDiv.lastChild);
@@ -76,18 +83,30 @@
         }
     }
 
-    function initDocument() {
-        clearDocument();
-        var rootDiv = document.createElement('div');
-        rootDiv.id = 'rootContainer';
-        var companyNamesContainer = document.createElement('div');
-        chicagoStartups.forEach( function(chicagoStartup, index) {
+    function populateCompanyNamesContainer(companyNamesContainer) {
+        chicagoStartups.forEach(function (chicagoStartup, index) {
             var childDiv = document.createElement('div');
-            var text = document.createTextNode(index.toString().concat(' .) ').concat(chicagoStartup));
+            var text = document.createTextNode(index.toString().concat('.) ').concat(chicagoStartup));
             childDiv.appendChild(text);
             companyNamesContainer.appendChild(childDiv);
         });
+    }
+
+    function initDocument() {
+        var rootDiv = document.getElementById('rootContainer');
+        if (!rootDiv) {
+            rootDiv = document.createElement('div');
+            rootDiv.id = 'rootContainer';
+        } else {
+            clearDocument(rootDiv);
+        }
+
+        var companyNamesContainer = document.createElement('div');
+        companyNamesContainer.className = 'startups-container main';
+
         rootDiv.appendChild(companyNamesContainer);
+
+        populateCompanyNamesContainer(companyNamesContainer);
         document.body.appendChild(rootDiv);
     }
 
@@ -109,8 +128,9 @@
                 });
             }
             else {
-                //TODO:: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
-                chicagoStartups.reverse().forEach( function(startup) {
+                let reversedChicagoStartups = chicagoStartupsReverse();
+
+                reversedChicagoStartups.forEach( function(startup) {
                     var childDiv = document.createElement('div');
                     var text = document.createTextNode(startup);
                     childDiv.appendChild(text);
@@ -122,28 +142,49 @@
 
     function chicagoStartupsReverse() {
         var reversedStartups = [];
-        /*
-            TODO: REVERSE THE CONTENTS OF THE ARRAY WITHOUT USING THE BUILT IN REVERSE METHOD
-                  RETURN THE REVERSED ARRAY
 
-            TIPS: 
-                1.  REVIEW JAVASCRIPT ARRAY DATA STRUCTURE AND THE BUILTIN METHODS PROVIDED TO ALL ARRAYS
+        var cloneChicagoStartups = chicagoStartups.slice(0);
 
-                2.  THIS IS A COMMON JOB INTERVIEW QUESTION, THAT SHOULD BE SOLVABLE BASED ON AN UNDERSTANDING OF
-                    DATA STRUTUCTURES REGARDLESS OF THE PROGRAMMING LANGUAGE
-        
-        */
+        let numberOfStartups = cloneChicagoStartups.length;
+        for (var i = 0; i < numberOfStartups; i++) {
+            let startupAtTopOfArrayStack = cloneChicagoStartups.pop();
+            reversedStartups.push(startupAtTopOfArrayStack);
+        }
+
         return reversedStartups;
     }
 
     function cleanAndCountCharacters() {
         console.log('CLEAN AND COUNT CHARACTERS');
-        /*
-            TODO: REMOVES ANY SPECIAL CHARACTERS FROM EACH COMPANY NAME AND
-              DISPLAYS THE NUMBER OF REMAINING CHARACTERS NEXT TO THE FULL WORD.
-              DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
-        */
 
+        chicagoStartups = chicagoStartups.map((startup) => {
+            startup = startup.trim();
+
+            startup = startup
+                .split("")
+                .filter((char) => {
+                    return isLetter(char) || char == " ";
+                });
+
+            startup = startup.reduce((accumulationNoRepeatedWhitespace, currChar)=>{
+                if (currChar === " " && currChar === accumulationNoRepeatedWhitespace.slice(-1)){
+                    return accumulationNoRepeatedWhitespace
+                } else {
+                    return accumulationNoRepeatedWhitespace + currChar;
+                }
+            });
+
+            let numberOfChars = startup.length;
+
+            startup += " " + numberOfChars;
+            return startup;
+        });
+
+        run();
+    }
+
+    function isLetter(char) {
+        return char.toLowerCase() !== char.toUpperCase();
     }
     
     function initReverse() {
@@ -159,21 +200,25 @@
         document.getElementById('rootContainer').appendChild(reverseContainer);
     }
 
+    let isVertical = true;
     function toggleDisplay() {
-        /*
-        TODO: REVIEW THE CODE IN THE PROVIDED REVERSE EXAMPLE, USE JAVASCRIPT TO ADD A CLICKABLE BUTTON 
-        CALLED "Toggle Display" ... WHEN THE USER CLICKS THE BUTTON, IT RENDERS THE DISPLAY OF THE COMPANY NAMES 
-        FROM VERTICAL, TO HORIZONTAL.
-        IF THE USER CLICKS THE TOGGLE BUTTON AGAIN THE NAMES SHOULD ONCE AGAIN BE DISPLAYED VERTICALLY.
+        // TODO https://stackoverflow.com/questions/13389751/change-tag-using-javascript
+        var rootStartupsContainer = document.querySelector(".startups-container.main");
 
-        TIPS: 
-            1.  MAKE SURE TO READ AND UNDERSTAND THE DIFFERENCE BETWEEN BLOCK ELEMENTS SUCH AS A DIV, 
-                AND INLINE ELEMENTS SUCH AS A SPAN.
+        if (isVertical) {
+            [...rootStartupsContainer.children].map((child) => {
+                var horizontalChild = document.createElement("span");
+                horizontalChild.append(child.innerText.concat(" "));
 
-            2.  DIVIDE AND CONQUER.
+                rootStartupsContainer.replaceChild(horizontalChild, child);
+            });
 
-            3.  
-        */
+            isVertical = false;
+        } else {
+            rootStartupsContainer.innerHTML = "";
+            populateCompanyNamesContainer(rootStartupsContainer);
+            isVertical = true;
+        }
     }
     
     function run() {
