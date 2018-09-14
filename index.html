@@ -8,7 +8,7 @@ alexander baumann
 -->
 <html>
     <h3>Javascript Basics</h3>
-    <span>
+    <span class="header">
 
         <button onclick="cleanAndCountCharacters()">
             clean and count characters
@@ -173,6 +173,7 @@ alexander baumann
                     return isLetter(char) || char == " ";
                 });
 
+
             startup = startup.reduce((accumulationNoRepeatedWhitespace, currChar)=>{
                 if (currChar === " " && currChar === accumulationNoRepeatedWhitespace.slice(-1)){
                     return accumulationNoRepeatedWhitespace
@@ -180,6 +181,7 @@ alexander baumann
                     return accumulationNoRepeatedWhitespace + currChar;
                 }
             });
+            startup = startup.trim();
 
             let numberOfChars = startup.length;
 
